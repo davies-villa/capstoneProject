@@ -79,6 +79,7 @@ app.get("/api/flights", ensureAccessToken, async (req, res) => {
   }
 });
 
+// Endpoint to search for hotels
 app.get("/api/hotels", ensureAccessToken, async (req, res) => {
   const { cityCode } = req.query;
 
@@ -99,13 +100,44 @@ app.get("/api/hotels", ensureAccessToken, async (req, res) => {
       },
     });
 
-    res.json(response.data); // Adjust based on the response structure
+    res.json(response.data);
   } catch (error) {
     console.error(
       "Error fetching hotel data:",
       error.response ? error.response.data : error.message
     );
     res.status(500).json({ error: "Failed to fetch hotel data" });
+  }
+});
+
+// Endpoint to search for destinations using TripAdvisor API
+app.get("/api/destinations", ensureAccessToken, async (req, res) => {
+  const { location } = req.query;
+
+  if (!location) {
+    return res.status(400).json({ error: "Location is required" });
+  }
+
+  const url = `https://api.tripadvisor.com/api/v2.0/location/search`;
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${TRIPADVISOR_API_KEY}`,
+      },
+      params: {
+        query: location,
+        limit: 20,
+      },
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error(
+      "Error fetching destination data:",
+      error.response ? error.response.data : error.message
+    );
+    res.status(500).json({ error: "Failed to fetch destination data" });
   }
 });
 

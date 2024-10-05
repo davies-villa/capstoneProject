@@ -7,6 +7,7 @@ const FlightSearch = () => {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [departureDate, setDepartureDate] = useState("");
+  const [adults, setAdults] = useState(1); // New state for adults
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,7 +20,7 @@ const FlightSearch = () => {
 
     try {
       const response = await fetch(
-        `/api/flights?origin=${origin}&destination=${destination}&departureDate=${departureDate}&adults=1`
+        `/api/flights?origin=${origin}&destination=${destination}&departureDate=${departureDate}&adults=${adults}` // Updated fetch URL
       );
 
       if (!response.ok) {
@@ -66,6 +67,16 @@ const FlightSearch = () => {
             type="date"
             value={departureDate}
             onChange={(e) => setDepartureDate(e.target.value)}
+            className="p-2 rounded shadow mb-4 md:mb-0"
+            required
+          />
+          {/* New input for number of adults */}
+          <input
+            type="number"
+            min="1"
+            value={adults}
+            onChange={(e) => setAdults(e.target.value)}
+            placeholder="Adults"
             className="p-2 rounded shadow mb-4 md:mb-0"
             required
           />

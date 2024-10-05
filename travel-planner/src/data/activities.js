@@ -37,6 +37,30 @@ const activities = [
       price: 79,
       image: destination5, // Update path
     },
+    {
+      id: 5,
+      title: "Cultural Tour",
+      description: "Discover the rich history and culture of our beautiful region.",
+      categories: ["Culture", "History"],
+      price: 79,
+      image: destination5, // Update path
+    },
+    {
+      id: 6,
+      title: "Cultural Tour",
+      description: "Discover the rich history and culture of our beautiful region.",
+      categories: ["Culture", "History"],
+      price: 79,
+      image: destination5, // Update path
+    },
+    {
+      id: 7,
+      title: "Cultural Tour",
+      description: "Discover the rich history and culture of our beautiful region.",
+      categories: ["Culture", "History"],
+      price: 79,
+      image: destination5, // Update path
+    },
     // Add more activities as needed
   ];
   

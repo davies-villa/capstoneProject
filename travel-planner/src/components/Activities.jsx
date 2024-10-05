@@ -22,7 +22,7 @@ const PrevArrow = ({ onClick }) => (
 // Custom Next Arrow with Inline SVG
 const NextArrow = ({ onClick }) => (
   <button 
-    className="slick-next custom-arrow d-none right-[15px] lg:right-[-10px] absolute z-10 top-[40%]" 
+    className="slick-next custom-arrow none  right-[15px] lg:right-[-10px] absolute z-10 top-[40%]" 
     onClick={onClick}
   >
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-10 w-10 text-[#C38144] bg-white p-2 rounded-full">

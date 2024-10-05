@@ -6,9 +6,31 @@ import { format } from 'date-fns';
 import 'react-date-range/dist/styles.css'; // Main style file for react-date-range
 import 'react-date-range/dist/theme/default.css'; // Theme css file for react-date-range
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-const SearchForm = () => {
+const destinations = [
+  { name: 'Paris, France' },
+  { name: 'Cape Town, South Africa' },
+  { name: 'Cairo, Egypt' },
+  { name: 'Marrakech, Morocco' },
+  { name: 'Nairobi, Kenya' },
+  { name: 'Johannesburg, South Africa' },
+  { name: 'Lagos, Nigeria' },
+  { name: 'Addis Ababa, Ethiopia' },
+  { name: 'Accra, Ghana' },
+  { name: 'Casablanca, Morocco' },
+  { name: 'Victoria Falls, Zimbabwe' },
+  { name: 'Tunis, Tunisia' },
+  { name: 'Dakar, Senegal' },
+  { name: 'Zanzibar, Tanzania' },
+  { name: 'Windhoek, Namibia' },
+  { name: 'Gaborone, Botswana' },
+  { name: 'Seychelles, Seychelles' },
+  { name: 'Mauritius, Mauritius' },
+  { name: 'Kampala, Uganda' },
+  { name: 'Lusaka, Zambia' },
+];
+
+function SearchForm() {
   const navigate = useNavigate();
   const [destination, setDestination] = useState('');
   const [filteredCities, setFilteredCities] = useState([]);
@@ -24,16 +46,11 @@ const SearchForm = () => {
     const value = e.target.value;
     setDestination(value);
 
-    // Make API call to Trip Advisor for location search
     if (value) {
-      axios.get(`/api/locations?query=${value}`) // Adjust this to your endpoint
-        .then(response => {
-          const filtered = response.data.results.map(city => ({ name: city.name })); // Adapt according to API response structure
-          setFilteredCities(filtered.slice(0, 20)); // Limit to 20 results
-        })
-        .catch(err => {
-          console.error("Error fetching locations:", err);
-        });
+      const filtered = destinations.filter((city) =>
+        city.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(filtered.slice(0, 20)); // Limit to 20 results
     } else {
       setFilteredCities([]);
     }
@@ -79,7 +96,7 @@ const SearchForm = () => {
             type="text"
             value={destination}
             onChange={handleSearchChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded " // Added padding-left to make space for the icon
             placeholder="Search for destinations..."
           />
         </div>
@@ -133,13 +150,27 @@ const SearchForm = () => {
         </select>
       </div>
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="bg-custom-brown text-white px-4 py-2 rounded hover:bg-brown-dark transition duration-200 w-full lg:w-auto"
-      >
-        Search
-      </button>
+   {/* Submit Button */}
+<button
+  type="submit"
+  className="bg-custom-brown text-white px-4 py-8 sm:py-6 rounded hover:bg-brown-dark transition duration-200 w-full lg:w-auto h-[20px] sm:h-[40px] flex justify-center items-center"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="h-6 w-6 mr-2" // Adjust size as needed
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+    />
+  </svg>
+  Search
+</button>
     </form>
   );
 }

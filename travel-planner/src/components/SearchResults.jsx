@@ -1,13 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import okavangoo from '../assets/okavangoo.png';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import okavangoo from "../assets/okavangoo.png";
 
-// Destination images mapping (as needed)
 const destinationImages = {
-  'Okavango Delta, Botswana': okavangoo,
-  // ... add other destinations as needed
+  "Okavango Delta, Botswana": okavangoo,
+  "Paris, France": okavangoo,
+  "Cape Town, South Africa": okavangoo,
+  "Cairo, Egypt": okavangoo,
+  "Marrakech, Morocco": okavangoo,
+  "Nairobi, Kenya": okavangoo,
+  "Johannesburg, South Africa": okavangoo,
+  "Lagos, Nigeria": okavangoo,
+  "Addis Ababa, Ethiopia": okavangoo,
+  "Accra, Ghana": okavangoo,
+  "Casablanca, Morocco": okavangoo,
+  "Victoria Falls, Zimbabwe": okavangoo,
+  "Tunis, Tunisia": okavangoo,
+  "Dakar, Senegal": okavangoo,
+  "Zanzibar, Tanzania": okavangoo,
+  "Windhoek, Namibia": okavangoo,
+  "Gaborone, Botswana": okavangoo,
+  "Seychelles, Seychelles": okavangoo,
+  "Mauritius, Mauritius": okavangoo,
+  "Kampala, Uganda": okavangoo,
+  "Lusaka, Zambia": okavangoo,
+  // ... (other destinations)
 };
+
+// Sample Itineraries Data
+const sampleItineraries = [
+  {
+    id: 1,
+    name: "Romantic Paris Getaway",
+    destination: "Paris, France",
+    description:
+      "Enjoy a romantic trip in Paris with visits to the Eiffel Tower and Seine River Cruise.",
+    category: "Romance",
+    price: 1200,
+    imageUrl: "paris.jpg",
+  },
+  {
+    id: 2,
+    name: "Safari Adventure in Nairobi",
+    destination: "Nairobi, Kenya",
+    description:
+      "Explore the savannahs with a luxury safari experience and wildlife tours.",
+    category: "Adventure",
+    price: 1500,
+    imageUrl: "nairobi.jpg",
+  },
+  {
+    id: 3,
+    name: "Historical Cairo Exploration",
+    destination: "Cairo, Egypt",
+    description:
+      "Visit the pyramids, the Sphinx, and the Cairo Museum in a 5-day historical adventure.",
+    category: "History",
+    price: 900,
+    imageUrl: "cairo.jpg",
+  },
+  {
+    id: 4,
+    name: "Cultural Marrakech Experience",
+    destination: "Marrakech, Morocco",
+    description:
+      "Dive into the vibrant markets, historic palaces, and stunning gardens of Marrakech.",
+    category: "Culture",
+    price: 1100,
+    imageUrl: "marrakech.jpg",
+  },
+  {
+    id: 5,
+    name: "Beach Relaxation in Seychelles",
+    destination: "Seychelles, Seychelles",
+    description:
+      "Relax on pristine beaches and enjoy water activities in the beautiful Seychelles.",
+    category: "Relaxation",
+    price: 1800,
+    imageUrl: "seychelles.jpg",
+  },
+  {
+    id: 6,
+    name: "Okavango Delta Adventure",
+    destination: "Okavango Delta, Botswana",
+    description:
+      "Experience the unique ecosystem of the Okavango Delta with guided safaris and boat tours.",
+    category: "Adventure",
+    price: 1600,
+    imageUrl: "okavangoo.png",
+  },
+];
 
 function SearchResults() {
   const location = useLocation();
@@ -29,30 +111,10 @@ function SearchResults() {
     flights: false,
     activities: false,
     accommodations: false,
-    category: 'All',
+    category: "All",
     minPrice: 0,
     maxPrice: 2000,
   });
-
-  const [itineraries, setItineraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchItineraries = async () => {
-      try {
-        // Replace with your actual TripAdvisor API endpoint and parameters
-        const response = await axios.get(`https://api.tripadvisor.com/your-endpoint?location=${searchLocation}`);
-        setItineraries(response.data); // Adjust based on your API response structure
-      } catch (err) {
-        setError('Failed to fetch itineraries.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchItineraries();
-  }, [searchLocation]);
 
   const handleBack = () => {
     navigate(-1); // Navigate back to the previous page
@@ -62,28 +124,35 @@ function SearchResults() {
     const { name, value, type, checked } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   // Apply Filters
-  const filteredItineraries = itineraries.filter((itinerary) => {
-    const matchesDestination = itinerary.destination.toLowerCase().includes(searchLocation.toLowerCase());
-    const matchesCategory = filters.category === 'All' || itinerary.category === filters.category;
-    const matchesPrice = itinerary.price >= filters.minPrice && itinerary.price <= filters.maxPrice;
+  const filteredItineraries = sampleItineraries.filter((itinerary) => {
+    const matchesDestination = itinerary.destination
+      .toLowerCase()
+      .includes(searchLocation.toLowerCase());
+    const matchesCategory =
+      filters.category === "All" || itinerary.category === filters.category;
+    const matchesPrice =
+      itinerary.price >= filters.minPrice &&
+      itinerary.price <= filters.maxPrice;
 
     return matchesDestination && matchesCategory && matchesPrice;
   });
 
   const handleItineraryClick = (itinerary) => {
-    navigate('/itinerarydetails', { state: { itinerary } });
+    navigate("/itinerarydetails", { state: { itinerary } });
   };
 
   return (
     <div className="p-6">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Search results for "{searchLocation}"</h2>
+        <h2 className="text-2xl font-bold">
+          Search results for "{searchLocation}"
+        </h2>
         <button
           className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
           onClick={handleBack}
@@ -91,10 +160,6 @@ function SearchResults() {
           Back
         </button>
       </div>
-
-      {/* Loading/Error Handling */}
-      {loading && <p>Loading itineraries...</p>}
-      {error && <p className="text-red-500">{error}</p>}
 
       {/* Available Options */}
       <p className="mb-4">Available options: {filteredItineraries.length}</p>
@@ -113,20 +178,22 @@ function SearchResults() {
             />
             Flights
           </label>
-          {/* Other checkboxes and category dropdown can be added here */}
+          {/* Other checkboxes and category dropdown */}
+          {/* ... */}
         </div>
       </div>
 
       {/* Itinerary Results */}
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
         {filteredItineraries.map((itinerary) => {
-          const itineraryImage = destinationImages[itinerary.destination] || okavangoo; // Fallback image
+          const itineraryImage =
+            destinationImages[itinerary.destination] || null;
 
           return (
             <div
               key={itinerary.id}
               className="bg-white shadow-lg rounded-lg p-4 flex flex-col lg:flex-row gap-4 cursor-pointer"
-              onClick={() => handleItineraryClick(itinerary)}
+              onClick={() => handleItineraryClick(itinerary)} // Add onClick event
             >
               {/* Itinerary Image */}
               {itineraryImage && (

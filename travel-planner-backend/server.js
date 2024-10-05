@@ -6,124 +6,31 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// Configure CORS to allow requests from your front-end
+const corsOptions = {
+  origin: 'http://localhost:5173', // Update if your front-end runs on a different origin
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
-let accessToken = "";
-let tokenExpiry = null;
-
-// Function to get a new access token
-const getAccessToken = async () => {
-  const url = "https://test.api.amadeus.com/v1/security/oauth2/token";
-  const params = new URLSearchParams();
-  params.append("grant_type", "client_credentials");
-  params.append("client_id", process.env.AMADEUS_CLIENT_ID);
-  params.append("client_secret", process.env.AMADEUS_CLIENT_SECRET);
-
-  try {
-    const response = await axios.post(url, params);
-    accessToken = response.data.access_token;
-    tokenExpiry = Date.now() + response.data.expires_in * 1000;
-    console.log("Access token obtained");
-  } catch (error) {
-    console.error(
-      "Error obtaining access token:",
-      error.response ? error.response.data : error.message
-    );
-  }
-};
-
-// Middleware to ensure a valid access token
-const ensureAccessToken = async (req, res, next) => {
-  if (!accessToken || Date.now() >= tokenExpiry) {
-    try {
-      await getAccessToken();
-    } catch (err) {
-      return res.status(500).json({ error: "Failed to obtain access token" });
-    }
-  }
-  next();
-};
-
-// Endpoint to search for flights
-app.get("/api/flights", ensureAccessToken, async (req, res) => {
-  const { origin, destination, departureDate } = req.query;
-
-  if (!origin || !destination || !departureDate) {
-    return res
-      .status(400)
-      .json({ error: "Origin, destination, and departureDate are required" });
-  }
-
-  const url = "https://test.api.amadeus.com/v2/shopping/flight-offers";
-
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        originLocationCode: origin,
-        destinationLocationCode: destination,
-        departureDate: departureDate,
-      },
-    });
-
-    res.json(response.data);
-  } catch (error) {
-    console.error(
-      "Error fetching flight data:",
-      error.response ? error.response.data : error.message
-    );
-    res.status(500).json({ error: "Failed to fetch flight data" });
-  }
-});
-
-// Endpoint to search for hotels
-app.get("/api/hotels", ensureAccessToken, async (req, res) => {
-  const { cityCode } = req.query;
-
-  if (!cityCode) {
-    return res.status(400).json({ error: "City code is required" });
-  }
-
-  const url =
-    "https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city";
-
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        cityCode: cityCode,
-      },
-    });
-
-    res.json(response.data);
-  } catch (error) {
-    console.error(
-      "Error fetching hotel data:",
-      error.response ? error.response.data : error.message
-    );
-    res.status(500).json({ error: "Failed to fetch hotel data" });
-  }
-});
-
 // Endpoint to search for destinations using TripAdvisor API
-app.get("/api/destinations", ensureAccessToken, async (req, res) => {
+app.get("/api/destinations", async (req, res) => {
   const { location } = req.query;
 
   if (!location) {
     return res.status(400).json({ error: "Location is required" });
   }
 
-  const url = `https://api.tripadvisor.com/api/v2.0/location/search`;
+  // Replace with the correct TripAdvisor API endpoint
+  const url = `https://api.tripadvisor.com/api/v2.0/location/search`; 
 
   try {
+    console.log(`Fetching destinations for location: ${location}`);
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${TRIPADVISOR_API_KEY}`,
+        Authorization: `Bearer ${process.env.TRIPADVISOR_API_KEY}`,
       },
       params: {
         query: location,
@@ -131,6 +38,7 @@ app.get("/api/destinations", ensureAccessToken, async (req, res) => {
       },
     });
 
+    console.log(`Received data:`, response.data);
     res.json(response.data);
   } catch (error) {
     console.error(
@@ -141,8 +49,7 @@ app.get("/api/destinations", ensureAccessToken, async (req, res) => {
   }
 });
 
-// Start the server and get the initial access token
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  getAccessToken();
 });

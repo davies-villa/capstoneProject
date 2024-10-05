@@ -21,6 +21,9 @@ module.exports = {
       },
       colors: {
         'custom-brown': '#C38144', 
+        'custom-sub': '#D9B189',
+        'main': '#635e59',
+        'sub':'#6a6a6a'
       },
     },
   },

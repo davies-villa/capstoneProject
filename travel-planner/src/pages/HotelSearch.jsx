@@ -45,27 +45,27 @@ const HotelsSearch = () => {
     <div className="w-full ">
       <div
         className="h-[60vh]"
-        style={{
-          backgroundImage: `url(${headerBackground})`,
-        }}
+      
       >
         <Navbar />
-        <h2 className="text-2xl font-bold mb-4 text-center">
+        <h2 className="text-3xl font-bold text-main mb-4 mt-5 text-center">
           Search for Hotels
         </h2>
-
+        <p className="text-lg mb-6 text-sub text-center">
+            Engage in thrilling activities tailored just for you!
+          </p>
         {/* Input field and Search button */}
-        <div className="flex items-center space-x-4 mb-6">
+        <div className="flex items-centerp-6 justify-center space-x-4 mb-6">
           <input
             type="text"
             placeholder="Enter city code (e.g., VFA)"
             value={cityCode}
             onChange={(e) => setCityCode(e.target.value.toUpperCase())}
-            className="w-48 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-white"
+            className="w-48 px-6 py-3 border rounded-md focus:outline-none shadow-custom-black focus:ring-2 focus:ring-white"
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-custom-brown text-white rounded-md"
+            className="px-6 py-3 bg-custom-brown shadow-custom-black text-white rounded-md"
           >
             Search
           </button>
